@@ -27,6 +27,14 @@ export async function login(authConfig: TAuthConfig) {
   })
 }
 
+function urlencodeFormData(fd){
+    var params = new URLSearchParams();
+    for(var pair of fd.entries()){
+        typeof pair[1]=='string' && params.append(pair[0], pair[1]);
+    }
+    return params.toString();
+}
+
 export const fetchTokens = (authConfig: TAuthConfig): Promise<any> => {
   /*
     The browser has been redirected from the authentication endpoint with
@@ -54,7 +62,7 @@ export const fetchTokens = (authConfig: TAuthConfig): Promise<any> => {
 
   return fetch(authConfig.tokenEndpoint, {
     method: 'POST',
-    body: formData,
+    body: urlencodeFormData(formData),
   })
     .then((response) => response.json().then((body: any): any => {
         if (!response.ok) {
